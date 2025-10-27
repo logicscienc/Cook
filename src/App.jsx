@@ -1,17 +1,14 @@
-import { useState } from 'react'
+import { useState } from "react";
+import Home from "./pages/Home";
 
-import './App.css'
+import "./App.css";
 
 function App() {
- 
-
   return (
-    <>
-     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white text-3xl">
-      Tailwind is working 
+    <div className="min-h-screen ">
+      <Home />
     </div>
-    </>
-  )
+  );
 }
 
-export default App
+export default App;
