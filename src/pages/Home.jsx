@@ -25,6 +25,8 @@ export default function Home() {
 
       const data = await res.json();
 
+      console.log("API RESPONSE:", data);
+
       if (data.meals) setRecipes(data.meals);
       else setError("No recipes found :(");
     } catch {
