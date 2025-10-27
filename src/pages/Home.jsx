@@ -1,10 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import bg from "../assets/bg.jpeg";
+import SearchBar from "../components/SearchBar";
+import RecipeList from "../components/RecipeList";
+import Loader from "../components/Loader";
 
 export default function Home() {
+  // create state variables
+  const [ingredient, setIngredient] = useState("");
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // fetch logic
+  const fetchRecipies = async () => {
+    if (!ingredient.trim()) return;
+    setLoading(true);
+    setError("");
+    setRecipes([]);
+
+    try {
+      const res = await fetch(
+        `https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`
+      );
+
+      const data = await res.json();
+
+      if (data.meals) setRecipes(data.meals);
+      else setError("No recipes found :(");
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div
-      className="relative min-h-screen flex flex-col items-center justify-center p-6"
+      className="relative min-h-screen flex flex-col  p-6"
       style={{
         backgroundImage: `url(${bg})`,
         backgroundSize: "cover",
@@ -19,23 +51,19 @@ export default function Home() {
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           Discover Delicious Recipes 🍽️
         </h1>
-        <p className="text-lg mb-6 opacity-90">
+        <p className="text-lg mb-6 opacity-90 text-center">
           Type an ingredient and get meal ideas instantly!
         </p>
       </div>
 
       {/* Search Section — centered */}
-      <div className="relative z-10 flex flex-col items-center justify-center flex-1">
-        <div className="flex justify-center mt-8">
-          <input
-            type="text"
-            placeholder="Search for recipes..."
-            className="px-4 py-2 w-72 md:w-96 rounded-l-md focus:outline-none text-black"
-          />
-          <button className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-r-md">
-            Search
-          </button>
-        </div>
+
+      <div className="relative z-10 w-full max-w-2xl mt-6">
+        <SearchBar
+          ingredient={ingredient}
+          setIngredient={setIngredient}
+          onSearch={fetchRecipies}
+        />
       </div>
     </div>
   );
