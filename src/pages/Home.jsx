@@ -1,22 +1,21 @@
 import React, { useState } from "react";
 import bg from "../assets/bg.jpeg";
 import SearchBar from "../components/SearchBar";
-import RecipeList from "../components/RecipeList";
+import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 
 export default function Home() {
   // create state variables
   const [ingredient, setIngredient] = useState("");
-  const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   // fetch logic
   const fetchRecipies = async () => {
     if (!ingredient.trim()) return;
     setLoading(true);
     setError("");
-    setRecipes([]);
 
     try {
       const res = await fetch(
@@ -27,8 +26,15 @@ export default function Home() {
 
       console.log("API RESPONSE:", data);
 
-      if (data.meals) setRecipes(data.meals);
-      else setError("No recipes found :(");
+      if (data.meals) {
+        // save to local storage for next pages
+        localStorage.setItem("recipes", JSON.stringify(data.meals));
+
+        // redirected to meal pages
+        navigate("/meals");
+      } else {
+        setError("No recipes found :(");
+      }
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -66,7 +72,14 @@ export default function Home() {
           setIngredient={setIngredient}
           onSearch={fetchRecipies}
         />
+        {error && <p className="text-red-300 mt-4">{error}</p>}
       </div>
+
+      {loading && (
+        <div className="absolute inset-0 bg-black/60 flex justify-center items-center z-20">
+          <Loader />
+        </div>
+      )}
     </div>
   );
 }

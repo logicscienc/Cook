@@ -1,20 +1,27 @@
 import React from "react";
-import RecipeCard from "./RecipeCard";
 
 export default function RecipeList({ recipes }) {
-  if (!recipes || recipes.length === 0) {
-    return (
-      <p className="text-center text-white/80 mt-10">
-        Start by typing an ingredient above 🍅
-      </p>
-    );
-  }
-
   return (
-    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-8">
-      {recipes.map((meal) => (
-        <RecipeCard key={meal.idMeal} meal={meal} />
+    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {recipes.map((recipe) => (
+        <div
+          key={recipe.idMeal}
+          className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-transform hover:-translate-y-1"
+        >
+          <img
+            src={recipe.strMealThumb}
+            alt={recipe.strMeal}
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-4 text-center">
+            <h2 className="text-lg font-semibold text-gray-800">
+              {recipe.strMeal}
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">ID: {recipe.idMeal}</p>
+          </div>
+        </div>
       ))}
     </div>
   );
 }
+
