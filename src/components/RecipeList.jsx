@@ -1,11 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function RecipeList({ recipes }) {
+  const navigate = useNavigate();
   return (
     <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {recipes.map((recipe) => (
         <div
           key={recipe.idMeal}
+          onClick={() => navigate(`/recipe/${recipe.idMeal}`)}
           className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-transform hover:-translate-y-1"
         >
           <img
@@ -24,4 +27,3 @@ export default function RecipeList({ recipes }) {
     </div>
   );
 }
-
