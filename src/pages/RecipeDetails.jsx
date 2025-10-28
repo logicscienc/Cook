@@ -18,13 +18,10 @@ export default function RecipeDetails() {
           `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
         );
         const data = await res.json();
-        console.log("RECIPE DETAILS API RESPONSE:", data);
 
         if (data.meals && data.meals.length > 0) {
           const meal = data.meals[0];
           setRecipe(meal);
-
-          // Fetch similar recipes by category
           fetchSimilarRecipes(meal.strCategory);
         } else {
           setError("Recipe not found");
@@ -44,9 +41,8 @@ export default function RecipeDetails() {
         );
         const data = await res.json();
         if (data.meals) {
-          // Filter out the current recipe itself
           const filtered = data.meals.filter((m) => m.idMeal !== id);
-          setSimilarRecipes(filtered.slice(0, 6)); // show top 6 only
+          setSimilarRecipes(filtered.slice(0, 8));
         }
       } catch (err) {
         console.error("Error fetching similar recipes:", err);
@@ -56,7 +52,6 @@ export default function RecipeDetails() {
     fetchRecipeDetails();
   }, [id]);
 
-  // Extract ingredients + measures
   const getIngredients = (meal) => {
     const list = [];
     for (let i = 1; i <= 20; i++) {
@@ -69,15 +64,14 @@ export default function RecipeDetails() {
     return list;
   };
 
-  if (loading) {
+  if (loading)
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader />
       </div>
     );
-  }
 
-  if (error) {
+  if (error)
     return (
       <div className="flex flex-col justify-center items-center min-h-screen text-gray-700 p-6">
         <p className="text-xl mb-6">{error}</p>
@@ -89,86 +83,131 @@ export default function RecipeDetails() {
         </button>
       </div>
     );
-  }
 
   const ingredients = getIngredients(recipe);
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 p-6">
-      <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-md p-8 mt-10">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate(-1)}
-          className="mb-6 text-lg text-gray-600 hover:text-pink-600 transition flex items-center gap-2"
-        >
-          ← Back to Recipes
-        </button>
+    <div className="relative min-h-screen overflow-hidden text-gray-800">
+      {/* 🍕 Animated Gradient Background */}
+      <motion.div
+        className="absolute inset-0 z-0"
+        animate={{
+          background: [
+            "linear-gradient(120deg, #fff3e0, #ffe4e1, #fff9c4)",
+            "linear-gradient(120deg, #ffe0b2, #f8bbd0, #fffde7)",
+            "linear-gradient(120deg, #fff3e0, #ffe4e1, #fff9c4)",
+          ],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          repeatType: "reverse",
+        }}
+        style={{
+          backgroundSize: "400% 400%",
+          filter: "blur(60px)",
+        }}
+      />
+      {/* 🍩 Floating Food Icons (Left & Right Sides) */}
+      {/* 🍩 Floating Food Icons (Closer to Center) */}
+      {[...Array(12)].map((_, i) => {
+        const isLeft = i < 6;
+        const emoji = ["🍕", "🍔", "🍩", "🍰", "🥐", "🍝"][i % 6];
 
-        {/* Recipe Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-col md:flex-row gap-8"
-        >
-          {/* Image with hover zoom */}
-          <motion.img
-            src={recipe.strMealThumb}
-            alt={recipe.strMeal}
-            className="rounded-xl shadow-xl w-full md:w-1/2 cursor-pointer"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 200 }}
-          />
+        return (
+          <motion.div
+            key={i}
+            className={`fixed text-4xl select-none pointer-events-none z-0 ${
+              isLeft ? "left-[15%]" : "right-[15%]"
+            }`} // <-- Closer to the center (was 6%)
+            style={{
+              top: `${Math.random() * 80 + 10}%`, // random 10%–90% vertically
+              opacity: 0.5 + Math.random() * 0.4,
+              filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
+            }}
+            animate={{
+              y: [0, -30, 0],
+              x: isLeft ? [0, 12, -12, 0] : [0, -12, 12, 0],
+              rotate: [0, 10, -10, 0],
+            }}
+            transition={{
+              duration: 10 + Math.random() * 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            {emoji}
+          </motion.div>
+        );
+      })}
 
-          {/* Info */}
-          <div className="flex-1">
-            <h1 className="text-4xl font-bold mb-4 text-pink-600">
-              {recipe.strMeal}
-            </h1>
-            <p className="text-gray-600 mb-2 text-lg">
-              <strong>Category:</strong> {recipe.strCategory || "N/A"}
-            </p>
-            <p className="text-gray-600 mb-4 text-lg">
-              <strong>Area:</strong> {recipe.strArea || "N/A"}
-            </p>
+      {/* 🍳 Main Content Card */}
+      <div className="relative z-10 p-6">
+        <div className="max-w-5xl mx-auto bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 mt-10 border border-amber-100">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate(-1)}
+            className="mb-6 text-xl text-gray-700 hover:text-pink-600 font-medium flex items-center gap-2 transition"
+          >
+            ← Back to Recipes
+          </button>
 
-            <h2 className="text-2xl font-semibold mb-2 text-gray-800">
-              Ingredients 🥣
-            </h2>
-            <ul className="list-disc list-inside text-gray-700 space-y-1 mb-6">
-              {ingredients.map((item, index) => (
-                <motion.li
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.03 }}
-                  viewport={{ once: true }}
-                >
-                  {item}
-                </motion.li>
-              ))}
-            </ul>
-          </div>
-        </motion.div>
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col md:flex-row gap-10"
+          >
+            {/* Image */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 200 }}
+              className="relative rounded-2xl overflow-hidden shadow-2xl flex-shrink-0"
+            >
+              <div className="relative w-full md:w-[480px]">
+                <img
+                  src={recipe.strMealThumb}
+                  alt={recipe.strMeal}
+                  className="w-full h-auto rounded-2xl object-contain bg-white"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none"></div>
+              </div>
+            </motion.div>
 
-        {/* Instructions */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="mt-10"
-        >
-          <h2 className="text-2xl font-semibold mb-3 text-gray-800">
-            Instructions 👨‍🍳
-          </h2>
-          <p className="text-gray-700 leading-relaxed whitespace-pre-line text-lg">
-            {recipe.strInstructions}
-          </p>
-        </motion.div>
+            {/* Info */}
+            <div className="flex-1">
+              <h1 className="text-5xl font-extrabold mb-4 text-pink-600 drop-shadow-sm">
+                {recipe.strMeal}
+              </h1>
+              <p className="text-gray-700 mb-2 text-lg">
+                <strong>Category:</strong> {recipe.strCategory || "N/A"}
+              </p>
+              <p className="text-gray-700 mb-4 text-lg">
+                <strong>Area:</strong> {recipe.strArea || "N/A"}
+              </p>
 
-        {/* YouTube Video */}
-        {recipe.strYoutube && (
+              <h2 className="text-2xl font-semibold mb-2 text-gray-900">
+                Ingredients 🥣
+              </h2>
+              <ul className="list-disc list-inside text-gray-700 space-y-1 mb-6">
+                {ingredients.map((item, index) => (
+                  <motion.li
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.03 }}
+                    viewport={{ once: true }}
+                  >
+                    {item}
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+          </motion.div>
+
+          {/* Instructions */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -176,58 +215,101 @@ export default function RecipeDetails() {
             viewport={{ once: true }}
             className="mt-12"
           >
-            <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-              Watch Video 🎥
+            <h2 className="text-3xl font-semibold mb-3 text-gray-900">
+              Instructions 👨‍🍳
             </h2>
-            <div className="aspect-video rounded-xl overflow-hidden shadow-lg">
-              <iframe
-                width="100%"
-                height="100%"
-                src={recipe.strYoutube.replace("watch?v=", "embed/")}
-                title="YouTube video"
-                allowFullScreen
-              ></iframe>
-            </div>
+            <p className="text-gray-700 leading-relaxed whitespace-pre-line text-lg">
+              {recipe.strInstructions}
+            </p>
           </motion.div>
-        )}
 
-        {/* Similar Recipes */}
-        {similarRecipes.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="mt-16"
-          >
-            <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-              Similar Recipes 🍛
-            </h2>
+          {/* YouTube Video */}
+          {recipe.strYoutube && (
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="mt-14"
+            >
+              <h2 className="text-3xl font-semibold mb-4 text-gray-900">
+                Watch Video 🎥
+              </h2>
+              <div className="aspect-video rounded-2xl overflow-hidden shadow-xl">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={recipe.strYoutube.replace("watch?v=", "embed/")}
+                  title="YouTube video"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            </motion.div>
+          )}
 
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {similarRecipes.map((meal, i) => (
+          {/* Similar Recipes – Auto Slider */}
+          {similarRecipes.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="mt-20"
+            >
+              <h2 className="text-3xl font-bold mb-10 text-gray-900 text-center">
+                Similar Recipes 🍳
+              </h2>
+
+              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-amber-50 via-orange-50 to-rose-50 py-8 shadow-inner">
                 <motion.div
-                  key={meal.idMeal}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 150 }}
-                  className="cursor-pointer bg-gray-50 rounded-xl overflow-hidden shadow-md hover:shadow-xl"
-                  onClick={() => navigate(`/recipe/${meal.idMeal}`)}
+                  className="flex gap-8"
+                  animate={{ x: ["0%", "-100%"] }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 25,
+                    ease: "linear",
+                  }}
                 >
-                  <img
-                    src={meal.strMealThumb}
-                    alt={meal.strMeal}
-                    className="w-full h-40 object-cover"
-                  />
-                  <div className="p-3 text-center">
-                    <h3 className="text-md font-semibold text-gray-800">
-                      {meal.strMeal}
-                    </h3>
-                  </div>
+                  {[...similarRecipes, ...similarRecipes].map((meal, index) => (
+                    <motion.div
+                      key={index}
+                      whileHover={{ scale: 1.08, rotate: 1 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 10,
+                      }}
+                      onClick={() => navigate(`/recipe/${meal.idMeal}`)}
+                      className="cursor-pointer min-w-[260px] bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transform"
+                    >
+                      <div className="relative">
+                        <img
+                          src={meal.strMealThumb}
+                          alt={meal.strMeal}
+                          className="w-full h-52 object-cover transition-transform duration-300 hover:scale-110"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent"></div>
+                      </div>
+                      <div className="p-4 text-center">
+                        <h3 className="text-lg font-semibold text-gray-800 truncate">
+                          {meal.strMeal}
+                        </h3>
+                        <p className="text-sm text-amber-600 mt-1 font-medium">
+                          Tap to explore →
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
                 </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        )}
+
+                {/* Gradient fade edges */}
+                <div className="absolute top-0 left-0 w-24 h-full bg-gradient-to-r from-amber-50 to-transparent pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-rose-50 to-transparent pointer-events-none"></div>
+              </div>
+            </motion.div>
+          )}
+        </div>
       </div>
     </div>
   );
