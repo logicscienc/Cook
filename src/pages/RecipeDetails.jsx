@@ -6,6 +6,7 @@ import Loader from "../components/Loader";
 export default function RecipeDetails() {
   const { id } = useParams();
   const [recipe, setRecipe] = useState(null);
+  const [similarRecipes, setSimilarRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -17,11 +18,14 @@ export default function RecipeDetails() {
           `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
         );
         const data = await res.json();
-
         console.log("RECIPE DETAILS API RESPONSE:", data);
 
         if (data.meals && data.meals.length > 0) {
-          setRecipe(data.meals[0]);
+          const meal = data.meals[0];
+          setRecipe(meal);
+
+          // Fetch similar recipes by category
+          fetchSimilarRecipes(meal.strCategory);
         } else {
           setError("Recipe not found");
         }
@@ -33,9 +37,26 @@ export default function RecipeDetails() {
       }
     };
 
+    const fetchSimilarRecipes = async (category) => {
+      try {
+        const res = await fetch(
+          `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`
+        );
+        const data = await res.json();
+        if (data.meals) {
+          // Filter out the current recipe itself
+          const filtered = data.meals.filter((m) => m.idMeal !== id);
+          setSimilarRecipes(filtered.slice(0, 6)); // show top 6 only
+        }
+      } catch (err) {
+        console.error("Error fetching similar recipes:", err);
+      }
+    };
+
     fetchRecipeDetails();
   }, [id]);
 
+  // Extract ingredients + measures
   const getIngredients = (meal) => {
     const list = [];
     for (let i = 1; i <= 20; i++) {
@@ -62,9 +83,9 @@ export default function RecipeDetails() {
         <p className="text-xl mb-6">{error}</p>
         <button
           onClick={() => navigate(-1)}
-          className="px-5 py-2 bg-pink-500 text-white rounded-lg text-lg hover:bg-pink-600 transition-all shadow-md hover:shadow-lg"
+          className="px-6 py-2 bg-pink-500 text-white text-lg rounded-lg hover:bg-pink-600 transition"
         >
-          ← Go Back
+          ← Back to Recipes
         </button>
       </div>
     );
@@ -73,95 +94,141 @@ export default function RecipeDetails() {
   const ingredients = getIngredients(recipe);
 
   return (
-    <motion.div
-      className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50 text-gray-800 p-6"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-    >
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-8 mt-10">
-        <motion.button
+    <div className="min-h-screen bg-gray-50 text-gray-800 p-6">
+      <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-md p-8 mt-10">
+        {/* Back Button */}
+        <button
           onClick={() => navigate(-1)}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="mb-6 px-6 py-2 bg-gradient-to-r from-pink-500 to-red-400 text-white rounded-full text-base md:text-lg font-semibold shadow-md hover:shadow-lg transition-all"
+          className="mb-6 text-lg text-gray-600 hover:text-pink-600 transition flex items-center gap-2"
         >
           ← Back to Recipes
-        </motion.button>
+        </button>
 
-        <div className="flex flex-col md:flex-row gap-8 items-start">
+        {/* Recipe Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row gap-8"
+        >
+          {/* Image with hover zoom */}
           <motion.img
             src={recipe.strMealThumb}
             alt={recipe.strMeal}
-            className="rounded-2xl shadow-lg w-full md:w-1/2 object-cover shadow-2xl"
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            whileHover={{ scale: 1.06 }}
-            transition={{ duration: 0.5, type: "spring", stiffness: 140 }}
-            viewport={{ once: true }}
+            className="rounded-xl shadow-xl w-full md:w-1/2 cursor-pointer"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 200 }}
           />
 
-          <motion.div
-            className="flex-1"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            <h1 className="text-4xl font-bold mb-4 text-gray-900">
+          {/* Info */}
+          <div className="flex-1">
+            <h1 className="text-4xl font-bold mb-4 text-pink-600">
               {recipe.strMeal}
             </h1>
-            <p className="text-gray-700 mb-2 text-lg">
+            <p className="text-gray-600 mb-2 text-lg">
               <strong>Category:</strong> {recipe.strCategory || "N/A"}
             </p>
-            <p className="text-gray-700 mb-6 text-lg">
+            <p className="text-gray-600 mb-4 text-lg">
               <strong>Area:</strong> {recipe.strArea || "N/A"}
             </p>
 
-            <h2 className="text-2xl font-semibold mb-3">Ingredients 🥣</h2>
-            <ul className="list-disc list-inside text-gray-700 space-y-1 mb-6 text-base">
+            <h2 className="text-2xl font-semibold mb-2 text-gray-800">
+              Ingredients 🥣
+            </h2>
+            <ul className="list-disc list-inside text-gray-700 space-y-1 mb-6">
               {ingredients.map((item, index) => (
-                <li key={index}>{item}</li>
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.03 }}
+                  viewport={{ once: true }}
+                >
+                  {item}
+                </motion.li>
               ))}
             </ul>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
 
+        {/* Instructions */}
         <motion.div
-          className="mt-10"
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
+          transition={{ duration: 0.6 }}
           viewport={{ once: true }}
+          className="mt-10"
         >
-          <h2 className="text-3xl font-semibold mb-3">Instructions 👨‍🍳</h2>
+          <h2 className="text-2xl font-semibold mb-3 text-gray-800">
+            Instructions 👨‍🍳
+          </h2>
           <p className="text-gray-700 leading-relaxed whitespace-pre-line text-lg">
             {recipe.strInstructions}
           </p>
         </motion.div>
 
+        {/* YouTube Video */}
         {recipe.strYoutube && (
           <motion.div
-            className="mt-12"
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.6 }}
             viewport={{ once: true }}
+            className="mt-12"
           >
-            <h2 className="text-3xl font-semibold mb-4">Watch Video 🎥</h2>
-            <div className="aspect-video rounded-2xl overflow-hidden shadow-lg">
+            <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+              Watch Video 🎥
+            </h2>
+            <div className="aspect-video rounded-xl overflow-hidden shadow-lg">
               <iframe
                 width="100%"
                 height="100%"
                 src={recipe.strYoutube.replace("watch?v=", "embed/")}
                 title="YouTube video"
                 allowFullScreen
-                className="rounded-xl"
               ></iframe>
             </div>
           </motion.div>
         )}
+
+        {/* Similar Recipes */}
+        {similarRecipes.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="mt-16"
+          >
+            <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+              Similar Recipes 🍛
+            </h2>
+
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {similarRecipes.map((meal, i) => (
+                <motion.div
+                  key={meal.idMeal}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 150 }}
+                  className="cursor-pointer bg-gray-50 rounded-xl overflow-hidden shadow-md hover:shadow-xl"
+                  onClick={() => navigate(`/recipe/${meal.idMeal}`)}
+                >
+                  <img
+                    src={meal.strMealThumb}
+                    alt={meal.strMeal}
+                    className="w-full h-40 object-cover"
+                  />
+                  <div className="p-3 text-center">
+                    <h3 className="text-md font-semibold text-gray-800">
+                      {meal.strMeal}
+                    </h3>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
       </div>
-    </motion.div>
+    </div>
   );
 }
