@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { FaRegHeart } from "react-icons/fa6";
+import { FaHeart } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import Loader from "../components/Loader";
 
@@ -7,9 +10,58 @@ export default function RecipeDetails() {
   const { id } = useParams();
   const [recipe, setRecipe] = useState(null);
   const [similarRecipes, setSimilarRecipes] = useState([]);
+  const [isAnimating, setIsAnimating] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem("favorites");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const handleToggleRavourite = (recipe) => {
+    const isFavorite = favorites.some((fav) => fav.idMeal === recipe.idMeal);
+    let updatedFavorites;
+
+    if (isFavorite) {
+      updatedFavorites = favorites.filter(
+        (fav) => fav.idMeal !== recipe.idMeal
+      );
+      toast.error("Removed from Favorites 💔", {
+        style: {
+          borderRadius: "10px",
+          background: "#fff1f2",
+          color: "#be123c",
+          border: "1px solid #fecdd3",
+        },
+        iconTheme: {
+          primary: "#f43f5e",
+          secondary: "#fff",
+        },
+      });
+    } else {
+      updatedFavorites = [...favorites, recipe];
+      setIsAnimating(true);
+      setTimeout(() => setIsAnimating(false), 800);
+
+      toast.success("Added to Favorites ❤️", {
+        style: {
+          borderRadius: "10px",
+          background: "#fff0f6",
+          color: "#9d174d",
+          border: "1px solid #fbcfe8",
+        },
+        iconTheme: {
+          primary: "#ec4899",
+          secondary: "#fff",
+        },
+      });
+    }
+
+    setFavorites(updatedFavorites);
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+  };
 
   useEffect(() => {
     const fetchRecipeDetails = async () => {
@@ -173,6 +225,63 @@ export default function RecipeDetails() {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none"></div>
+
+                {/* ❤️ Favorite Button */}
+                <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 z-20">
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => handleToggleRavourite(recipe)}
+                    className="relative group flex items-center justify-center w-16 h-16 rounded-full bg-white shadow-lg"
+                  >
+                    {/* Hover glow */}
+                    <div className="absolute inset-0 rounded-full bg-pink-200 opacity-0 group-hover:opacity-70 blur-xl transition duration-500"></div>
+
+                    {/* Pulse animation when adding */}
+                    {isAnimating && (
+                      <motion.div
+                        className="absolute inset-0 rounded-full bg-pink-300 blur-xl"
+                        initial={{ scale: 0.8, opacity: 0.6 }}
+                        animate={{ scale: 1.6, opacity: 0 }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                      />
+                    )}
+
+                    {/* Sparkles */}
+                    {isAnimating &&
+                      [...Array(6)].map((_, i) => (
+                        <motion.div
+                          key={i}
+                          className="absolute w-2 h-2 bg-pink-400 rounded-full"
+                          initial={{
+                            opacity: 1,
+                            scale: 0.5,
+                            x: 0,
+                            y: 0,
+                          }}
+                          animate={{
+                            opacity: 0,
+                            scale: 1.5,
+                            x: Math.cos((i * 60 * Math.PI) / 180) * 25,
+                            y: Math.sin((i * 60 * Math.PI) / 180) * 25,
+                          }}
+                          transition={{ duration: 0.8, ease: "easeOut" }}
+                        />
+                      ))}
+
+                    {/* Heart Icon (changes color when favorited) */}
+                    <motion.div
+                      className="relative z-10 text-pink-500"
+                      animate={isAnimating ? { scale: [1, 1.3, 1] } : {}}
+                      transition={{ duration: 0.6 }}
+                    >
+                      {favorites.some((fav) => fav.idMeal === recipe.idMeal) ? (
+                        <FaHeart className="w-8 h-8 text-pink-500 drop-shadow-md" />
+                      ) : (
+                        <FaRegHeart className="w-8 h-8 text-pink-400 hover:text-pink-500 transition-colors" />
+                      )}
+                    </motion.div>
+                  </motion.button>
+                </div>
               </div>
             </motion.div>
 
