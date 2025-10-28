@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { FaHeart } from "react-icons/fa6";
+import { motion } from "framer-motion";
 import bg from "../assets/bg.jpeg";
 import SearchBar from "../components/SearchBar";
 import { useNavigate } from "react-router-dom";
@@ -96,6 +98,24 @@ export default function Home() {
           onSearch={fetchRecipies}
         />
         {error && <p className="text-red-300 mt-4 text-center">{error}</p>}
+        {/* favorite button */}
+        <motion.div
+          whileHover={{ scale: 1.1 }}
+          transition={{ type: "spring", stiffness: 300 }}
+          onClick={() => navigate("/favorites")}
+          className="mt-6 flex flex-col items-center text-white cursor-pointer"
+        >
+          <motion.div
+            whileHover={{
+              scale: 1.2,
+              boxShadow: "0 0 20px rgba(255, 0, 100, 0.8)",
+            }}
+            className="p-3 bg-white/10 rounded-full backdrop-blur-md border border-white/30"
+          >
+            <FaHeart className="text-pink-400 w-8 h-8 fill-pink-500 drop-shadow-[0_0_10px_#ff1493]" />
+          </motion.div>
+          <p className="mt-2 text-lg font-semibold">Favorites</p>
+        </motion.div>
       </div>
 
       {/* Loader */}
@@ -107,4 +127,3 @@ export default function Home() {
     </div>
   );
 }
-

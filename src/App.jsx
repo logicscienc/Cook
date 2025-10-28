@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
 import MealsPage from "./pages/MealsPage";
 import RecipeDetails from "./pages/RecipeDetails";
+import FavoritesPage from "./pages/FavoritesPage";
 
 import "./App.css";
 
@@ -29,6 +30,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/meals" element={<MealsPage />} />
         <Route path="/recipe/:id" element={<RecipeDetails />} />
+        <Route path="/favorites" element={<FavoritesPage />} /> 
       </Routes>
     </Router>
   );
