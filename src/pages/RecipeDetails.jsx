@@ -171,7 +171,7 @@ export default function RecipeDetails() {
             key={i}
             className={`fixed text-4xl select-none pointer-events-none z-0 ${
               isLeft ? "left-[15%]" : "right-[15%]"
-            }`} // <-- Closer to the center (was 6%)
+            }`} 
             style={{
               top: `${Math.random() * 80 + 10}%`, // random 10%–90% vertically
               opacity: 0.5 + Math.random() * 0.4,
@@ -269,17 +269,38 @@ export default function RecipeDetails() {
                       ))}
 
                     {/* Heart Icon (changes color when favorited) */}
-                    <motion.div
-                      className="relative z-10 text-pink-500"
-                      animate={isAnimating ? { scale: [1, 1.3, 1] } : {}}
-                      transition={{ duration: 0.6 }}
-                    >
-                      {favorites.some((fav) => fav.idMeal === recipe.idMeal) ? (
-                        <FaHeart className="w-8 h-8 text-pink-500 drop-shadow-md" />
-                      ) : (
-                        <FaRegHeart className="w-8 h-8 text-pink-400 hover:text-pink-500 transition-colors" />
-                      )}
-                    </motion.div>
+                   
+<div className="flex flex-col items-center relative z-10 text-pink-500">
+  <motion.div
+    animate={isAnimating ? { scale: [1, 1.3, 1] } : {}}
+    transition={{ duration: 0.6 }}
+  >
+    {favorites.some((fav) => fav.idMeal === recipe.idMeal) ? (
+      <FaHeart className="w-8 h-8 text-pink-500 drop-shadow-md" />
+    ) : (
+      <FaRegHeart className="w-8 h-8 text-pink-400 hover:text-pink-500 transition-colors" />
+    )}
+  </motion.div>
+
+  {/* Text Label */}
+  <motion.span
+    key={
+      favorites.some((fav) => fav.idMeal === recipe.idMeal)
+        ? "favorited"
+        : "favorite"
+    }
+    initial={{ opacity: 0, y: 5 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -5 }}
+    transition={{ duration: 0.3 }}
+    className="mt-1 text-sm font-medium text-gray-700"
+  >
+    {favorites.some((fav) => fav.idMeal === recipe.idMeal)
+      ? "Favorited"
+      : "Favorite"}
+  </motion.span>
+</div>
+
                   </motion.button>
                 </div>
               </div>
