@@ -88,7 +88,7 @@ export default function Home() {
 
   return (
     <div
-      className="relative min-h-screen flex flex-col p-6"
+      className="relative min-h-screen flex flex-col p-6 "
       style={{
         backgroundImage: `url(${bg})`,
         backgroundSize: "cover",
@@ -99,7 +99,7 @@ export default function Home() {
       <div className="absolute inset-0 bg-black/40"></div>
 
       {/* Header */}
-      <div className="relative z-10 text-left text-white max-w-3xl w-full px-6 mt-12 md:mt-16">
+      <div className="relative z-10 text-left text-white max-w-3xl w-full px-6 mt-12 md:mt-16 ml-24">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           Discover Delicious Recipes 🍽️
         </h1>
@@ -109,12 +109,22 @@ export default function Home() {
       </div>
 
       {/* Search Section */}
-      <div className="relative z-10 w-full max-w-2xl mt-6">
+      <div className="relative z-10 w-full max-w-2xl mt-6 ml-12">
         <SearchBar
           ingredient={ingredient}
           setIngredient={setIngredient}
           onSearch={fetchRecipies}
         />
+        <CookingTime
+          selectedTime={selectedTime}
+          setSelectedTime={setSelectedTime}
+        />
+
+        <MoodSelector
+          selectedMood={selectedMood}
+          setSelectedMood={setSelectedMood}
+        />
+
         {error && <p className="text-red-300 mt-4 text-center">{error}</p>}
         {/* favorite button */}
         <motion.div
