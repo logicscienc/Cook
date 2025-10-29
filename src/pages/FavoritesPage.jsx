@@ -1,6 +1,7 @@
 // src/pages/FavoritesPage.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import HomeButton from "../components/HomeButton";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 
@@ -26,6 +27,7 @@ export default function FavoritesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-8">
+      <HomeButton /> 
       <h1 className="text-4xl font-extrabold text-center mb-10 text-orange-700 drop-shadow-md">
         Your Favorite Recipes ❤️
       </h1>

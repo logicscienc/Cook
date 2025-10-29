@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import HomeButton from "../components/HomeButton";
 import toast from "react-hot-toast";
 import { FaRegHeart } from "react-icons/fa6";
 import { FaHeart } from "react-icons/fa6";
@@ -140,7 +141,8 @@ export default function RecipeDetails() {
 
   return (
     <div className="relative min-h-screen overflow-hidden text-gray-800">
-      {/* 🍕 Animated Gradient Background */}
+      {/* Animated Gradient Background */}
+      <HomeButton />
       <motion.div
         className="absolute inset-0 z-0"
         animate={{
@@ -171,7 +173,7 @@ export default function RecipeDetails() {
             key={i}
             className={`fixed text-4xl select-none pointer-events-none z-0 ${
               isLeft ? "left-[15%]" : "right-[15%]"
-            }`} 
+            }`}
             style={{
               top: `${Math.random() * 80 + 10}%`, // random 10%–90% vertically
               opacity: 0.5 + Math.random() * 0.4,
@@ -269,38 +271,39 @@ export default function RecipeDetails() {
                       ))}
 
                     {/* Heart Icon (changes color when favorited) */}
-                   
-<div className="flex flex-col items-center relative z-10 text-pink-500">
-  <motion.div
-    animate={isAnimating ? { scale: [1, 1.3, 1] } : {}}
-    transition={{ duration: 0.6 }}
-  >
-    {favorites.some((fav) => fav.idMeal === recipe.idMeal) ? (
-      <FaHeart className="w-8 h-8 text-pink-500 drop-shadow-md" />
-    ) : (
-      <FaRegHeart className="w-8 h-8 text-pink-400 hover:text-pink-500 transition-colors" />
-    )}
-  </motion.div>
 
-  {/* Text Label */}
-  <motion.span
-    key={
-      favorites.some((fav) => fav.idMeal === recipe.idMeal)
-        ? "favorited"
-        : "favorite"
-    }
-    initial={{ opacity: 0, y: 5 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -5 }}
-    transition={{ duration: 0.3 }}
-    className="mt-1 text-sm font-medium text-gray-700"
-  >
-    {favorites.some((fav) => fav.idMeal === recipe.idMeal)
-      ? "Favorited"
-      : "Favorite"}
-  </motion.span>
-</div>
+                    <div className="flex flex-col items-center relative z-10 text-pink-500">
+                      <motion.div
+                        animate={isAnimating ? { scale: [1, 1.3, 1] } : {}}
+                        transition={{ duration: 0.6 }}
+                      >
+                        {favorites.some(
+                          (fav) => fav.idMeal === recipe.idMeal
+                        ) ? (
+                          <FaHeart className="w-8 h-8 text-pink-500 drop-shadow-md" />
+                        ) : (
+                          <FaRegHeart className="w-8 h-8 text-pink-400 hover:text-pink-500 transition-colors" />
+                        )}
+                      </motion.div>
 
+                      {/* Text Label */}
+                      <motion.span
+                        key={
+                          favorites.some((fav) => fav.idMeal === recipe.idMeal)
+                            ? "favorited"
+                            : "favorite"
+                        }
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        transition={{ duration: 0.3 }}
+                        className="mt-1 text-sm font-medium text-gray-700"
+                      >
+                        {favorites.some((fav) => fav.idMeal === recipe.idMeal)
+                          ? "Favorited"
+                          : "Favorite"}
+                      </motion.span>
+                    </div>
                   </motion.button>
                 </div>
               </div>
