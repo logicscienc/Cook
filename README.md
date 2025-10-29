@@ -62,7 +62,9 @@ pnpm run dev
 
 Open your browser at
 
-http://localhost:5173                                                                                                         ⚠️ Error Handling
+http://localhost:5173                                                                                                     
+
+⚠️ Error Handling
 
 Shows “No recipes found” when API returns empty results
 
