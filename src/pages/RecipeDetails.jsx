@@ -162,8 +162,7 @@ export default function RecipeDetails() {
           filter: "blur(60px)",
         }}
       />
-      {/* 🍩 Floating Food Icons (Left & Right Sides) */}
-      {/* 🍩 Floating Food Icons (Closer to Center) */}
+     
       {[...Array(12)].map((_, i) => {
         const isLeft = i < 6;
         const emoji = ["🍕", "🍔", "🍩", "🍰", "🥐", "🍝"][i % 6];
@@ -175,7 +174,7 @@ export default function RecipeDetails() {
               isLeft ? "left-[15%]" : "right-[15%]"
             }`}
             style={{
-              top: `${Math.random() * 80 + 10}%`, // random 10%–90% vertically
+              top: `${Math.random() * 80 + 10}%`, 
               opacity: 0.5 + Math.random() * 0.4,
               filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
             }}
@@ -195,7 +194,7 @@ export default function RecipeDetails() {
         );
       })}
 
-      {/* 🍳 Main Content Card */}
+      {/*  Main Content Card */}
       <div className="relative z-10 p-6">
         <div className="max-w-5xl mx-auto bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 mt-10 border border-amber-100">
           {/* Back Button */}
@@ -228,7 +227,7 @@ export default function RecipeDetails() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none"></div>
 
-                {/* ❤️ Favorite Button */}
+                {/*  Favorite Button */}
                 <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 z-20">
                   <motion.button
                     whileTap={{ scale: 0.9 }}
@@ -322,7 +321,7 @@ export default function RecipeDetails() {
               </p>
 
               <h2 className="text-2xl font-semibold mb-2 text-gray-900">
-                Ingredients 🥣
+                Ingredients 
               </h2>
               <ul className="list-disc list-inside text-gray-700 space-y-1 mb-6">
                 {ingredients.map((item, index) => (
@@ -349,7 +348,7 @@ export default function RecipeDetails() {
             className="mt-12"
           >
             <h2 className="text-3xl font-semibold mb-3 text-gray-900">
-              Instructions 👨‍🍳
+              Instructions 
             </h2>
             <p className="text-gray-700 leading-relaxed whitespace-pre-line text-lg">
               {recipe.strInstructions}
@@ -366,7 +365,7 @@ export default function RecipeDetails() {
               className="mt-14"
             >
               <h2 className="text-3xl font-semibold mb-4 text-gray-900">
-                Watch Video 🎥
+                Watch Video 
               </h2>
               <div className="aspect-video rounded-2xl overflow-hidden shadow-xl">
                 <iframe
@@ -390,7 +389,7 @@ export default function RecipeDetails() {
               className="mt-20"
             >
               <h2 className="text-3xl font-bold mb-10 text-gray-900 text-center">
-                Similar Recipes 🍳
+                Similar Recipes 
               </h2>
 
               <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-amber-50 via-orange-50 to-rose-50 py-8 shadow-inner">

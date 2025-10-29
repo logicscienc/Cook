@@ -39,7 +39,7 @@ export default function FavoritesPage() {
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center justify-center text-gray-600 text-xl mt-20"
         >
-          <p>😔 Oops! There’s nothing you’ve chosen yet.</p>
+          <p> Oops! There’s nothing you’ve chosen yet.</p>
           <button
             onClick={() => navigate("/")}
             className="mt-6 px-6 py-2 bg-orange-600 text-white rounded-full shadow-md hover:bg-orange-700 transition-all"
