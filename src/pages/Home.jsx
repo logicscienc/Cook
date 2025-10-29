@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaHeart } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import bg from "../assets/bg.jpeg";
@@ -9,8 +9,21 @@ import Loader from "../components/Loader";
 export default function Home() {
   const [ingredient, setIngredient] = useState("");
   const [loading, setLoading] = useState(false);
+  const [favCount, setFavCount] = useState(0);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  // keep it updated favorites change in localStorage
+  useEffect(() => {
+    const updateCount = () => {
+      const stored = JSON.parse(localStorage.getItem("favorites")) || [];
+      setFavCount(stored.length);
+    };
+    updateCount();
+    window.addEventListener("storage", updateCount);
+
+    return () => window.removeEventListener("storage", updateCount);
+  }, []);
 
   //  The async function
   const fetchRecipies = async () => {
@@ -113,6 +126,16 @@ export default function Home() {
             className="p-3 bg-white/10 rounded-full backdrop-blur-md border border-white/30"
           >
             <FaHeart className="text-pink-400 w-8 h-8 fill-pink-500 drop-shadow-[0_0_10px_#ff1493]" />
+            {favCount > 0 && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-md"
+              >
+                {favCount}
+              </motion.div>
+            )}
           </motion.div>
           <p className="mt-2 text-lg font-semibold">Favorites</p>
         </motion.div>
