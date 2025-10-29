@@ -10,14 +10,12 @@ const moods = [
 
 export default function MoodSelector({ selectedMood, setSelectedMood }) {
   return (
-    <div className="flex flex-wrap justify-center gap-4 mt-6">
+    <div className="flex flex-wrap justify-center gap-4 mt-6 mb-6">
       {moods.map((mood) => (
         <button
           key={mood.label}
           onClick={() =>
-            setSelectedMood((prev) =>
-              prev === mood.label ? "" : mood.label
-            )
+            setSelectedMood((prev) => (prev === mood.label ? "" : mood.label))
           }
           className={`flex flex-col items-center px-3 py-2 rounded-xl transition-all ${
             selectedMood === mood.label
