@@ -102,7 +102,8 @@ export default function Home() {
           Discover Delicious Recipes 🍽️
         </h1>
         <p className="text-lg mb-6 opacity-90 ">
-          Type one or more ingredients (e.g. chicken, tomato, onion)
+          What’s cooking tonight? Type one or more ingredients (e.g. chicken,
+          tomato, onion)
         </p>
       </div>
 
