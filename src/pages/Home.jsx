@@ -5,11 +5,16 @@ import bg from "../assets/bg.jpeg";
 import SearchBar from "../components/SearchBar";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import CookingTime from "../components/CookingTime";
+import MoodSelector from "../components/MoodSelector";
 
 export default function Home() {
   const [ingredient, setIngredient] = useState("");
   const [loading, setLoading] = useState(false);
   const [favCount, setFavCount] = useState(0);
+  const [selectedTime, setSelectedTime] = useState("All");
+  const [selectedMood, setSelectedMood] = useState("");
+
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
