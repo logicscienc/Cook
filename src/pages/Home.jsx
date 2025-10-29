@@ -109,15 +109,21 @@ export default function Home() {
 
       {/* Search Section */}
       <div className="relative z-10 w-full max-w-2xl mt-6 text-center">
-        <CookingTime
-          selectedTime={selectedTime}
-          setSelectedTime={setSelectedTime}
-        />
+        <div>
+          <h4 className="text-lg md:text-md font-semibold text-white text-center mt-4 ">
+            Busy day? Relax, I’ll help you cook something that fits your time.
+          </h4>
+          <CookingTime
+            selectedTime={selectedTime}
+            setSelectedTime={setSelectedTime}
+          />
 
-        <MoodSelector
-          selectedMood={selectedMood}
-          setSelectedMood={setSelectedMood}
-        />
+          <MoodSelector
+            selectedMood={selectedMood}
+            setSelectedMood={setSelectedMood}
+          />
+        </div>
+
         <SearchBar
           ingredient={ingredient}
           setIngredient={setIngredient}
