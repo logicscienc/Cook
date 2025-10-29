@@ -88,41 +88,38 @@ export default function Home() {
 
   return (
     <div
-      className="relative h-screen w-screen flex flex-col justify-center items-center p-6 bg-cover bg-center bg-no-repeat overflow-hidden"
-      style={{
-        backgroundImage: `url(${bg})`,
-      }}
+      className="relative min-h-screen w-screen flex flex-col justify-center items-center px-4 sm:px-6 py-10 sm:py-6 bg-cover bg-center bg-no-repeat overflow-hidden"
+      style={{ backgroundImage: `url(${bg})` }}
     >
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/70 to-black/90"></div>
 
       {/* Header */}
-      <div className="relative z-10 text-center text-white max-w-3xl px-6">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">
+      <div className="relative z-10 text-center text-white max-w-3xl px-4 sm:px-6 mt-10 sm:mt-0 mb-8 sm:mb-6">
+        <h1 className="text-3xl xs:text-4xl md:text-6xl font-bold mb-3 leading-snug">
           Discover Delicious Recipes 🍽️
         </h1>
-        <p className="text-lg mb-6 opacity-90 ">
+        <p className="text-base sm:text-lg opacity-90 leading-relaxed">
           What’s cooking tonight? Type one or more ingredients (e.g. chicken,
           tomato, onion)
         </p>
       </div>
 
       {/* Search Section */}
-      <div className="relative z-10 w-full max-w-2xl mt-6 text-center">
-        <div>
-          <h4 className="text-lg md:text-md font-semibold text-white text-center mt-4 ">
-            Busy day? Relax, I’ll help you cook something that fits your time.
-          </h4>
-          <CookingTime
-            selectedTime={selectedTime}
-            setSelectedTime={setSelectedTime}
-          />
+      <div className="relative z-10 w-full max-w-2xl mt-4 sm:mt-6 text-center">
+        <h4 className="text-base sm:text-lg font-semibold text-white text-center mt-2 sm:mt-4">
+          Busy day? Relax, I’ll help you cook something that fits your time.
+        </h4>
 
-          <MoodSelector
-            selectedMood={selectedMood}
-            setSelectedMood={setSelectedMood}
-          />
-        </div>
+        <CookingTime
+          selectedTime={selectedTime}
+          setSelectedTime={setSelectedTime}
+        />
+
+        <MoodSelector
+          selectedMood={selectedMood}
+          setSelectedMood={setSelectedMood}
+        />
 
         <SearchBar
           ingredient={ingredient}
@@ -131,19 +128,20 @@ export default function Home() {
         />
 
         {error && <p className="text-red-300 mt-4 text-center">{error}</p>}
-        {/* favorite button */}
+
+        {/* Favorite Button */}
         <motion.div
           whileHover={{ scale: 1.1 }}
           transition={{ type: "spring", stiffness: 300 }}
           onClick={() => navigate("/favorites")}
-          className="mt-6 flex flex-col items-center text-white cursor-pointer"
+          className="mt-8 sm:mt-6 flex flex-col items-center text-white cursor-pointer"
         >
           <motion.div
             whileHover={{
               scale: 1.2,
               boxShadow: "0 0 20px rgba(255, 0, 100, 0.8)",
             }}
-            className="p-3 bg-white/10 rounded-full backdrop-blur-md border border-white/30"
+            className="relative p-3 bg-white/10 rounded-full backdrop-blur-md border border-white/30"
           >
             <FaHeart className="text-pink-400 w-8 h-8 fill-pink-500 drop-shadow-[0_0_10px_#ff1493]" />
             {favCount > 0 && (
@@ -157,7 +155,7 @@ export default function Home() {
               </motion.div>
             )}
           </motion.div>
-          <p className="mt-2 text-lg font-semibold">Favorites</p>
+          <p className="mt-2 text-base sm:text-lg font-semibold">Favorites</p>
         </motion.div>
       </div>
 
